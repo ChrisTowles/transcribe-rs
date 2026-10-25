@@ -97,14 +97,30 @@ impl ParakeetModel {
         model_dir: &Path,
         quantization: &Quantization,
     ) -> Result<Self, TranscribeError> {
+        Self::load_with_threads(env, model_dir, quantization, None)
+    }
+
+    /// [`Self::load`] with each of the three sessions on `threads` intra-op threads and no
+    /// inter-op pool. `None` keeps ONNX Runtime's defaults: per session an intra-op and an
+    /// inter-op pool of about one thread per core (115 threads on 28 cores).
+    pub fn load_with_threads(
+        env: &ort::environment::Environment,
+        model_dir: &Path,
+        quantization: &Quantization,
+        threads: Option<usize>,
+    ) -> Result<Self, TranscribeError> {
         let encoder_path = session::resolve_model_path(model_dir, "encoder-model", quantization);
         let decoder_path =
             session::resolve_model_path(model_dir, "decoder_joint-model", quantization);
         let preprocessor_path = model_dir.join("nemo128.onnx");
 
-        let encoder = session::create_session(env, &encoder_path)?;
-        let decoder_joint = session::create_session(env, &decoder_path)?;
-        let preprocessor = session::create_session(env, &preprocessor_path)?;
+        let create = |path: &Path| match threads {
+            Some(n) => session::create_session_sequential(env, path, n),
+            None => session::create_session(env, path),
+        };
+        let encoder = create(&encoder_path)?;
+        let decoder_joint = create(&decoder_path)?;
+        let preprocessor = create(&preprocessor_path)?;
 
         let vocab_path = model_dir.join("vocab.txt");
         let (vocab, blank_idx) = load_vocab(&vocab_path)?;

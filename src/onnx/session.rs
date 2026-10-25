@@ -217,6 +217,17 @@ pub fn create_session_with_threads(
     build_session(env, path, Some(num_threads), true)
 }
 
+/// Create an ONNX session that runs its graph sequentially on `num_threads` intra-op threads
+/// (no inter-op pool). Each session owns its pools, so a model of several sessions with the
+/// defaults starts two pools of about one thread per core apiece.
+pub fn create_session_sequential(
+    env: &ort::environment::Environment,
+    path: &Path,
+    num_threads: usize,
+) -> Result<Session, ort::Error> {
+    build_session(env, path, Some(num_threads), false)
+}
+
 /// Resolve a model file path for the requested quantization level.
 ///
 /// Looks for `{name}.{suffix}.onnx` based on the quantization variant,
