@@ -146,12 +146,13 @@ fn is_xnnpack_active() -> bool {
 
 /// Internal session builder with full control over threading and EP selection.
 fn build_session(
+    env: &ort::environment::Environment,
     path: &Path,
     intra_threads: Option<usize>,
     parallel_execution: bool,
 ) -> Result<Session, ort::Error> {
     let mut builder =
-        Session::builder()?.with_optimization_level(GraphOptimizationLevel::Level3)?;
+        Session::builder(env)?.with_optimization_level(GraphOptimizationLevel::Level3)?;
 
     if is_xnnpack_active() {
         // See ort::ep::XNNPACK docs: disable session intra-op spinning and
@@ -200,13 +201,20 @@ fn build_session(
 }
 
 /// Create an ONNX session with standard settings.
-pub fn create_session(path: &Path) -> Result<Session, ort::Error> {
-    build_session(path, None, true)
+pub fn create_session(
+    env: &ort::environment::Environment,
+    path: &Path,
+) -> Result<Session, ort::Error> {
+    build_session(env, path, None, true)
 }
 
 /// Create an ONNX session with configurable thread count.
-pub fn create_session_with_threads(path: &Path, num_threads: usize) -> Result<Session, ort::Error> {
-    build_session(path, Some(num_threads), true)
+pub fn create_session_with_threads(
+    env: &ort::environment::Environment,
+    path: &Path,
+    num_threads: usize,
+) -> Result<Session, ort::Error> {
+    build_session(env, path, Some(num_threads), true)
 }
 
 /// Resolve a model file path for the requested quantization level.

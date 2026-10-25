@@ -55,8 +55,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Using Moonshine streaming engine");
     println!("Loading model: {:?}", model_path);
 
+    let env = ort::init().build()?;
+
     let load_start = Instant::now();
-    let mut model = StreamingModel::load(&model_path, 4, &Quantization::default())?;
+    let mut model = StreamingModel::load(&env, &model_path, 4, &Quantization::default())?;
     let load_duration = load_start.elapsed();
     println!("Model loaded in {:.2?}", load_duration);
 

@@ -49,6 +49,7 @@ pub struct MoonshineModel {
 
 impl MoonshineModel {
     pub fn load(
+        env: &ort::environment::Environment,
         model_dir: &Path,
         variant: MoonshineVariant,
         quantization: &Quantization,
@@ -65,10 +66,10 @@ impl MoonshineModel {
         }
 
         log::info!("Loading Moonshine encoder from {:?}...", encoder_path);
-        let encoder = session::create_session(&encoder_path)?;
+        let encoder = session::create_session(env, &encoder_path)?;
 
         log::info!("Loading Moonshine decoder from {:?}...", decoder_path);
-        let decoder = session::create_session(&decoder_path)?;
+        let decoder = session::create_session(env, &decoder_path)?;
 
         let encoder_input_names: Vec<String> = encoder
             .inputs()

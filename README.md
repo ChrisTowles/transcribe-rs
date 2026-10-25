@@ -55,7 +55,10 @@ use transcribe_rs::onnx::parakeet::{ParakeetModel, ParakeetParams, TimestampGran
 use transcribe_rs::onnx::Quantization;
 use std::path::PathBuf;
 
+// ort allows one environment per process: build it once and pass it to every load.
+let env = ort::init().build()?;
 let mut model = ParakeetModel::load(
+    &env,
     &PathBuf::from("models/parakeet-tdt-0.6b-v3-int8"),
     &Quantization::Int8,
 )?;
@@ -108,7 +111,10 @@ use transcribe_rs::onnx::canary::{CanaryModel, CanaryParams};
 use transcribe_rs::onnx::Quantization;
 use std::path::PathBuf;
 
+// ort allows one environment per process: build it once and pass it to every load.
+let env = ort::init().build()?;
 let mut model = CanaryModel::load(
+    &env,
     &PathBuf::from("models/canary-1b-v2"),
     &Quantization::Int8,
 )?;
@@ -150,7 +156,10 @@ use transcribe_rs::onnx::cohere::{CohereModel, CohereParams};
 use transcribe_rs::onnx::Quantization;
 use std::path::PathBuf;
 
+// ort allows one environment per process: build it once and pass it to every load.
+let env = ort::init().build()?;
 let mut model = CohereModel::load(
+    &env,
     &PathBuf::from("models/cohere-int4"),
     &Quantization::Int4,
 )?;
@@ -174,7 +183,10 @@ use transcribe_rs::onnx::sense_voice::{SenseVoiceModel, SenseVoiceParams};
 use transcribe_rs::onnx::Quantization;
 use std::path::PathBuf;
 
+// ort allows one environment per process: build it once and pass it to every load.
+let env = ort::init().build()?;
 let mut model = SenseVoiceModel::load(
+    &env,
     &PathBuf::from("models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17"),
     &Quantization::Int8,
 )?;
@@ -197,7 +209,10 @@ use transcribe_rs::onnx::Quantization;
 use transcribe_rs::SpeechModel;
 use std::path::PathBuf;
 
+// ort allows one environment per process: build it once and pass it to every load.
+let env = ort::init().build()?;
 let mut model = MoonshineModel::load(
+    &env,
     &PathBuf::from("models/moonshine-base"),
     MoonshineVariant::Base,
     &Quantization::default(),
@@ -213,7 +228,10 @@ use transcribe_rs::onnx::Quantization;
 use transcribe_rs::SpeechModel;
 use std::path::PathBuf;
 
+// ort allows one environment per process: build it once and pass it to every load.
+let env = ort::init().build()?;
 let mut model = StreamingModel::load(
+    &env,
     &PathBuf::from("models/moonshine-streaming/moonshine-tiny-streaming-en"),
     4,  // threads
     &Quantization::default(),
@@ -229,7 +247,10 @@ use transcribe_rs::onnx::Quantization;
 use transcribe_rs::SpeechModel;
 use std::path::PathBuf;
 
+// ort allows one environment per process: build it once and pass it to every load.
+let env = ort::init().build()?;
 let mut model = GigaAMModel::load(
+    &env,
     &PathBuf::from("models/giga-am-v3"),
     &Quantization::default(),
 )?;

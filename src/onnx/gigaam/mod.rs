@@ -36,7 +36,11 @@ pub struct GigaAMModel {
 }
 
 impl GigaAMModel {
-    pub fn load(model_dir: &Path, quantization: &Quantization) -> Result<Self, TranscribeError> {
+    pub fn load(
+        env: &ort::environment::Environment,
+        model_dir: &Path,
+        quantization: &Quantization,
+    ) -> Result<Self, TranscribeError> {
         let model_path = session::resolve_model_path(model_dir, "model", quantization);
         let vocab_path = model_dir.join("vocab.txt");
 
@@ -48,7 +52,7 @@ impl GigaAMModel {
         }
 
         log::info!("Loading GigaAM model from {:?}...", model_path);
-        let session = session::create_session(&model_path)?;
+        let session = session::create_session(env, &model_path)?;
 
         let (vocab, blank_idx) = load_vocab(&vocab_path)?;
         let blank_idx = blank_idx.unwrap_or(vocab.len() as i32) as i64;

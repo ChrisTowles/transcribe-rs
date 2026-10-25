@@ -21,8 +21,8 @@ fn test_canary_v2_transcribe() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
 
     let result = model
         .transcribe_file(&wav_path, &transcribe_rs::TranscribeOptions::default())
@@ -47,7 +47,8 @@ fn test_canary_v2_variant_detection() {
         return;
     }
 
-    let model = CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
 
     let caps = model.capabilities();
     assert_eq!(caps.name, "Canary 1B v2");
@@ -68,8 +69,8 @@ fn test_canary_v2_itn() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
 
     // With ITN: spoken numbers should be converted to digits
@@ -120,8 +121,8 @@ fn test_canary_v2_pnc() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
 
     // With PnC: should have commas or periods
@@ -173,8 +174,8 @@ fn test_canary_v2_translation() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
 
     // Translate German to English
@@ -212,8 +213,8 @@ fn test_canary_v2_german_transcription() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
 
     // Transcribe German as German (no translation)
@@ -247,8 +248,8 @@ fn test_canary_v2_translate_en_to_de() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
 
     // Translate English to German
@@ -283,8 +284,8 @@ fn test_canary_v2_translate_en_to_es() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
 
     let result = model
@@ -319,8 +320,8 @@ fn test_canary_flash_transcribe() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
 
     let result = model
         .transcribe_file(&wav_path, &transcribe_rs::TranscribeOptions::default())
@@ -345,7 +346,8 @@ fn test_canary_flash_variant_detection() {
         return;
     }
 
-    let model = CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
 
     let caps = model.capabilities();
     assert_eq!(caps.name, "Canary Flash");
@@ -364,8 +366,8 @@ fn test_canary_flash_itn_ignored() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
 
     // ITN enabled on Flash should be silently ignored and still produce output

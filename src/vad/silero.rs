@@ -6,7 +6,8 @@
 //!
 //! ```ignore
 //! use transcribe_rs::vad::SileroVad;
-//! let vad = SileroVad::new("/path/to/silero_vad_v4.onnx", 0.3)?;
+//! let env = ort::init().build()?;
+//! let vad = SileroVad::new(&env, "/path/to/silero_vad_v4.onnx", 0.3)?;
 //! ```
 
 use std::path::Path;
@@ -34,7 +35,8 @@ const FRAME_SAMPLES: usize = 480;
 /// ```ignore
 /// use transcribe_rs::vad::{SileroVad, Vad};
 ///
-/// let mut vad = SileroVad::new("silero_vad_v4.onnx", 0.3)?;
+/// let env = ort::init().build()?;
+/// let mut vad = SileroVad::new(&env, "silero_vad_v4.onnx", 0.3)?;
 /// let frame = vec![0.0f32; 480]; // 30ms of silence
 /// let is_speech = vad.is_speech(&frame)?;
 /// ```
@@ -49,11 +51,16 @@ pub struct SileroVad {
 impl SileroVad {
     /// Create a new `SileroVad` from a Silero ONNX model file.
     ///
+    /// - `env`: the process's ONNX Runtime environment
     /// - `model_path`: path to `silero_vad_v4.onnx`
     /// - `threshold`: speech probability threshold (recommended: 0.3)
-    pub fn new(model_path: impl AsRef<Path>, threshold: f32) -> Result<Self, TranscribeError> {
+    pub fn new(
+        env: &ort::environment::Environment,
+        model_path: impl AsRef<Path>,
+        threshold: f32,
+    ) -> Result<Self, TranscribeError> {
         let path = model_path.as_ref();
-        let session = Session::builder()
+        let session = Session::builder(env)
             .map_err(|e| TranscribeError::Config(format!("ort session builder: {e}")))?
             .with_optimization_level(GraphOptimizationLevel::Level3)
             .map_err(|e| TranscribeError::Config(format!("ort optimization level: {e}")))?

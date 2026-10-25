@@ -15,8 +15,8 @@ fn test_jfk_transcription() {
         return;
     }
 
-    let mut model =
-        ParakeetModel::load(&model_path, &Quantization::Int8).expect("Failed to load model");
+    let mut model = ParakeetModel::load(common::ort_env(), &model_path, &Quantization::Int8)
+        .expect("Failed to load model");
 
     let result = model
         .transcribe_file(&audio_path, &transcribe_rs::TranscribeOptions::default())
@@ -41,8 +41,8 @@ fn test_timestamps() {
         return;
     }
 
-    let mut model =
-        ParakeetModel::load(&model_path, &Quantization::Int8).expect("Failed to load model");
+    let mut model = ParakeetModel::load(common::ort_env(), &model_path, &Quantization::Int8)
+        .expect("Failed to load model");
 
     let result = model
         .transcribe_file(&audio_path, &transcribe_rs::TranscribeOptions::default())

@@ -16,6 +16,7 @@ fn test_moonshine_base_jfk() {
     }
 
     let mut model = MoonshineModel::load(
+        common::ort_env(),
         &model_path,
         MoonshineVariant::Base,
         &Quantization::default(),

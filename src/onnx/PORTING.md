@@ -86,14 +86,18 @@ impl YourModel {
     /// The directory must contain:
     /// - `model.onnx` (or `model.int8.onnx`, `model.fp16.onnx`)
     /// - Any required vocab/token files
-    pub fn load(model_dir: &Path, quantization: &Quantization) -> Result<Self, TranscribeError> {
+    pub fn load(
+        env: &ort::environment::Environment,
+        model_dir: &Path,
+        quantization: &Quantization,
+    ) -> Result<Self, TranscribeError> {
         let model_path = session::resolve_model_path(model_dir, "model", quantization);
 
         if !model_path.exists() {
             return Err(TranscribeError::ModelNotFound(model_path));
         }
 
-        let session = session::create_session(&model_path)?;
+        let session = session::create_session(env, &model_path)?;
 
         Ok(Self { session })
     }
@@ -156,7 +160,7 @@ fn test_your_model_transcribe() {
     }
 
     let mut model =
-        YourModel::load(&model_dir, &Quantization::default()).expect("Failed to load model");
+        YourModel::load(common::ort_env(), &model_dir, &Quantization::default()).expect("Failed to load model");
 
     let result = model
         .transcribe_file(&wav_path, None)
@@ -224,14 +228,14 @@ The naming convention for quantized variants is `model.{quantization}.onnx`:
 
 ### Session Utilities (`super::session`)
 
-- `create_session(path)` — Create ONNX session with standard settings
-- `create_session_with_threads(path, n)` — Create session with explicit thread count
+- `create_session(env, path)` — Create ONNX session with standard settings
+- `create_session_with_threads(env, path, n)` — Create session with explicit thread count
 - `resolve_model_path(dir, name, &Quantization)` — Resolve quantized model file path
 - `read_metadata_str/i32/float_vec(session, key)` — Read ONNX model metadata
 
 ## Key Patterns
 
-- **Constructor**: Always `Model::load(model_dir: &Path, quantization: &Quantization) -> Result<Self, TranscribeError>`
+- **Constructor**: Always `Model::load(env: &ort::environment::Environment, model_dir: &Path, quantization: &Quantization) -> Result<Self, TranscribeError>`; the caller owns the environment (ort allows one per process), tests share `common::ort_env()`
 - **Params struct**: Always `{Model}Params` with `#[derive(Debug, Clone, Default)]`
 - **Two transcribe methods**: `transcribe_with(&mut self, samples, &Params)` for model-specific params, plus `SpeechModel::transcribe()` for the generic trait interface
 - **Error handling**: Use `TranscribeError` variants — `ModelNotFound`, `Inference`, `Audio`, `Config`

@@ -24,8 +24,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Using Moonshine engine");
     println!("Loading model: {:?}", model_path);
 
+    let env = ort::init().build()?;
+
     let load_start = Instant::now();
     let mut model = MoonshineModel::load(
+        &env,
         &model_path,
         MoonshineVariant::Base,
         &Quantization::default(),

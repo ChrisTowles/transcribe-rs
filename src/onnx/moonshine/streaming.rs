@@ -282,6 +282,7 @@ pub struct StreamingModel {
 
 impl StreamingModel {
     pub fn load(
+        env: &ort::environment::Environment,
         model_dir: &Path,
         num_threads: usize,
         quantization: &Quantization,
@@ -314,7 +315,11 @@ impl StreamingModel {
             for path in &candidates {
                 if path.exists() {
                     log::info!("Loading streaming model component: {}", path.display());
-                    return Ok(session::create_session_with_threads(path, num_threads)?);
+                    return Ok(session::create_session_with_threads(
+                        env,
+                        path,
+                        num_threads,
+                    )?);
                 }
             }
 

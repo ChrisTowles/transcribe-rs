@@ -23,8 +23,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Using Parakeet engine");
     println!("Loading model: {:?}", model_path);
 
+    let env = ort::init().build()?;
+
     let load_start = Instant::now();
-    let mut model = ParakeetModel::load(&model_path, &Quantization::Int8)?;
+    let mut model = ParakeetModel::load(&env, &model_path, &Quantization::Int8)?;
     let load_duration = load_start.elapsed();
     println!("Model loaded in {:.2?}", load_duration);
 

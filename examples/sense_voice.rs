@@ -51,8 +51,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if int8 { "int8" } else { "fp32" }
     );
 
+    let env = ort::init().build()?;
+
     let load_start = Instant::now();
-    let mut model = SenseVoiceModel::load(&model_path, &quantization)?;
+    let mut model = SenseVoiceModel::load(&env, &model_path, &quantization)?;
     let load_duration = load_start.elapsed();
     println!("Model loaded in {:.2?}", load_duration);
 

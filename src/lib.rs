@@ -41,7 +41,9 @@
 //! use transcribe_rs::onnx::Quantization;
 //! use transcribe_rs::SpeechModel;
 //!
+//! let env = ort::init().build()?;
 //! let mut model = SenseVoiceModel::load(
+//!     &env,
 //!     &PathBuf::from("models/sense-voice"),
 //!     &Quantization::Int8,
 //! )?;

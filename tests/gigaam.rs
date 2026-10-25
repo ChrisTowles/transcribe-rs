@@ -17,8 +17,8 @@ fn test_gigaam_transcribe() {
         return;
     }
 
-    let mut model =
-        GigaAMModel::load(&model_dir, &Quantization::Int8).expect("Failed to load model");
+    let mut model = GigaAMModel::load(common::ort_env(), &model_dir, &Quantization::Int8)
+        .expect("Failed to load model");
 
     let result = model
         .transcribe_file(&wav_path, &transcribe_rs::TranscribeOptions::default())

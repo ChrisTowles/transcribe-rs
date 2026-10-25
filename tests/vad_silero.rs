@@ -13,7 +13,8 @@ fn test_silero_vad_detects_speech_in_audio() {
         return;
     }
 
-    let mut vad = SileroVad::new(&model_path, 0.3).expect("Failed to load Silero VAD");
+    let mut vad =
+        SileroVad::new(common::ort_env(), &model_path, 0.3).expect("Failed to load Silero VAD");
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
 
     let frame_size = vad.frame_size();
@@ -50,7 +51,8 @@ fn test_silero_vad_silence_detection() {
         return;
     }
 
-    let mut vad = SileroVad::new(&model_path, 0.3).expect("Failed to load Silero VAD");
+    let mut vad =
+        SileroVad::new(common::ort_env(), &model_path, 0.3).expect("Failed to load Silero VAD");
 
     // Pure silence should not be detected as speech
     let silence = vec![0.0f32; 480];
@@ -67,7 +69,8 @@ fn test_silero_vad_reset() {
         return;
     }
 
-    let mut vad = SileroVad::new(&model_path, 0.3).expect("Failed to load Silero VAD");
+    let mut vad =
+        SileroVad::new(common::ort_env(), &model_path, 0.3).expect("Failed to load Silero VAD");
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
 
     // Feed some frames to build up LSTM state
@@ -92,7 +95,8 @@ fn test_smoothed_silero_vad() {
         return;
     }
 
-    let silero = SileroVad::new(&model_path, 0.3).expect("Failed to load Silero VAD");
+    let silero =
+        SileroVad::new(common::ort_env(), &model_path, 0.3).expect("Failed to load Silero VAD");
     let mut vad = SmoothedVad::new(Box::new(silero), 15, 15, 2);
 
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");
@@ -125,7 +129,8 @@ fn test_smoothed_silero_vad_chunk_count() {
         return;
     }
 
-    let silero = SileroVad::new(&model_path, 0.3).expect("Failed to load Silero VAD");
+    let silero =
+        SileroVad::new(common::ort_env(), &model_path, 0.3).expect("Failed to load Silero VAD");
     let mut vad = SmoothedVad::new(Box::new(silero), 15, 15, 2);
 
     let samples = transcribe_rs::audio::read_wav_samples(&wav_path).expect("Failed to read WAV");

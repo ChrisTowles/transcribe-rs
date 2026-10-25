@@ -15,8 +15,8 @@ fn test_cohere_jfk() {
         return;
     }
 
-    let mut model =
-        CohereModel::load(&model_path, &Quantization::Int4).expect("Failed to load Cohere model");
+    let mut model = CohereModel::load(common::ort_env(), &model_path, &Quantization::Int4)
+        .expect("Failed to load Cohere model");
 
     let result = model
         .transcribe_file(&audio_path, &transcribe_rs::TranscribeOptions::default())
@@ -38,8 +38,8 @@ fn test_cohere_german() {
         return;
     }
 
-    let mut model =
-        CohereModel::load(&model_path, &Quantization::Int4).expect("Failed to load Cohere model");
+    let mut model = CohereModel::load(common::ort_env(), &model_path, &Quantization::Int4)
+        .expect("Failed to load Cohere model");
 
     let result = model
         .transcribe_file(
@@ -75,8 +75,8 @@ fn test_cohere_chinese() {
         return;
     }
 
-    let mut model =
-        CohereModel::load(&model_path, &Quantization::Int4).expect("Failed to load Cohere model");
+    let mut model = CohereModel::load(common::ort_env(), &model_path, &Quantization::Int4)
+        .expect("Failed to load Cohere model");
 
     let result = model
         .transcribe_file(

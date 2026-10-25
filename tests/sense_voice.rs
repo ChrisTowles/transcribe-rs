@@ -17,8 +17,8 @@ fn test_sense_voice_transcribe() {
         return;
     }
 
-    let mut model =
-        SenseVoiceModel::load(&model_path, &Quantization::FP32).expect("Failed to load model");
+    let mut model = SenseVoiceModel::load(common::ort_env(), &model_path, &Quantization::FP32)
+        .expect("Failed to load model");
 
     let result = model
         .transcribe_file(&wav_path, &transcribe_rs::TranscribeOptions::default())

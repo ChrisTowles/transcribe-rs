@@ -55,7 +55,11 @@ pub struct CohereModel {
 }
 
 impl CohereModel {
-    pub fn load(model_dir: &Path, quantization: &Quantization) -> Result<Self, TranscribeError> {
+    pub fn load(
+        env: &ort::environment::Environment,
+        model_dir: &Path,
+        quantization: &Quantization,
+    ) -> Result<Self, TranscribeError> {
         let encoder_path = resolve_model_file(
             model_dir,
             encoder_candidates(quantization),
@@ -70,10 +74,10 @@ impl CohereModel {
             resolve_model_file(model_dir, &["tokens.txt", "vocabulary.txt"], "tokens.txt")?;
 
         log::info!("Loading Cohere encoder from {:?}...", encoder_path);
-        let encoder = session::create_session(&encoder_path)?;
+        let encoder = session::create_session(env, &encoder_path)?;
 
         log::info!("Loading Cohere decoder from {:?}...", decoder_path);
-        let decoder = session::create_session(&decoder_path)?;
+        let decoder = session::create_session(env, &decoder_path)?;
 
         let (vocab, _) = load_vocab(&vocab_path)?;
         let token_to_id = vocab

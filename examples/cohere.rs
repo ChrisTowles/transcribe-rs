@@ -36,8 +36,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Using Cohere ONNX engine ({quant})");
     println!("Loading model: {:?}", model_path);
 
+    let env = ort::init().build()?;
+
     let load_start = Instant::now();
-    let mut model = CohereModel::load(&model_path, &quantization)?;
+    let mut model = CohereModel::load(&env, &model_path, &quantization)?;
     let load_duration = load_start.elapsed();
     println!("Model loaded in {:.2?}", load_duration);
 

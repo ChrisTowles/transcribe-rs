@@ -92,15 +92,19 @@ pub struct ParakeetModel {
 }
 
 impl ParakeetModel {
-    pub fn load(model_dir: &Path, quantization: &Quantization) -> Result<Self, TranscribeError> {
+    pub fn load(
+        env: &ort::environment::Environment,
+        model_dir: &Path,
+        quantization: &Quantization,
+    ) -> Result<Self, TranscribeError> {
         let encoder_path = session::resolve_model_path(model_dir, "encoder-model", quantization);
         let decoder_path =
             session::resolve_model_path(model_dir, "decoder_joint-model", quantization);
         let preprocessor_path = model_dir.join("nemo128.onnx");
 
-        let encoder = session::create_session(&encoder_path)?;
-        let decoder_joint = session::create_session(&decoder_path)?;
-        let preprocessor = session::create_session(&preprocessor_path)?;
+        let encoder = session::create_session(env, &encoder_path)?;
+        let decoder_joint = session::create_session(env, &decoder_path)?;
+        let preprocessor = session::create_session(env, &preprocessor_path)?;
 
         let vocab_path = model_dir.join("vocab.txt");
         let (vocab, blank_idx) = load_vocab(&vocab_path)?;

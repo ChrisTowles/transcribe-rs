@@ -103,6 +103,7 @@ impl CanaryModel {
     /// - `decoder-model[.int8|.fp16].onnx` (quantization-aware)
     /// - `vocab.txt`
     pub fn load(
+        env: &ort::environment::Environment,
         model_dir: &Path,
         quantization: &super::Quantization,
     ) -> Result<Self, TranscribeError> {
@@ -118,18 +119,18 @@ impl CanaryModel {
             "Loading Canary preprocessor from {:?}...",
             preprocessor_path
         );
-        let preprocessor = super::session::create_session(&preprocessor_path)?;
+        let preprocessor = super::session::create_session(env, &preprocessor_path)?;
 
         // Encoder and decoder respect quantization
         let encoder_path =
             super::session::resolve_model_path(model_dir, "encoder-model", quantization);
         log::info!("Loading Canary encoder from {:?}...", encoder_path);
-        let encoder = super::session::create_session(&encoder_path)?;
+        let encoder = super::session::create_session(env, &encoder_path)?;
 
         let decoder_path =
             super::session::resolve_model_path(model_dir, "decoder-model", quantization);
         log::info!("Loading Canary decoder from {:?}...", decoder_path);
-        let decoder = super::session::create_session(&decoder_path)?;
+        let decoder = super::session::create_session(env, &decoder_path)?;
 
         // Vocabulary
         let vocab_path = model_dir.join("vocab.txt");

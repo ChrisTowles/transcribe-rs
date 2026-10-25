@@ -18,8 +18,8 @@ fn transcribe_fixed_chunk_002_parakeet() {
         return;
     }
 
-    let mut model =
-        ParakeetModel::load(&model_path, &Quantization::Int8).expect("Failed to load model");
+    let mut model = ParakeetModel::load(common::ort_env(), &model_path, &Quantization::Int8)
+        .expect("Failed to load model");
 
     let samples = read_wav_samples(&chunk_path).expect("Failed to read chunk");
     println!(
@@ -44,8 +44,8 @@ fn transcribe_fixed_chunk_002_canary() {
         return;
     }
 
-    let mut model =
-        CanaryModel::load(&model_path, &Quantization::Int8).expect("Failed to load model");
+    let mut model = CanaryModel::load(common::ort_env(), &model_path, &Quantization::Int8)
+        .expect("Failed to load model");
 
     let samples = read_wav_samples(&chunk_path).expect("Failed to read chunk");
     println!(

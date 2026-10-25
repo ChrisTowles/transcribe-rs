@@ -26,8 +26,8 @@ fn compare_oneshot_vs_chunked() {
     let samples = read_wav_samples(&audio_path).expect("Failed to read audio");
     let options = TranscribeOptions::default();
 
-    let mut model =
-        ParakeetModel::load(&model_path, &Quantization::Int8).expect("Failed to load model");
+    let mut model = ParakeetModel::load(common::ort_env(), &model_path, &Quantization::Int8)
+        .expect("Failed to load model");
 
     // --- One-shot ---
     let oneshot = model
@@ -46,7 +46,8 @@ fn compare_oneshot_vs_chunked() {
         .expect("EnergyAdaptiveChunked transcription failed");
 
     // --- VadChunked (SileroVad) ---
-    let silero = SileroVad::new(&vad_path, 0.5).expect("Failed to load Silero VAD");
+    let silero =
+        SileroVad::new(common::ort_env(), &vad_path, 0.5).expect("Failed to load Silero VAD");
     let vad = SmoothedVad::new(Box::new(silero), 15, 20, 2);
     let vad_config = VadChunkedConfig {
         padding_secs: 0.2,
@@ -96,8 +97,8 @@ fn compare_streaming_energy_adaptive() {
     let samples = read_wav_samples(&audio_path).expect("Failed to read audio");
     let options = TranscribeOptions::default();
 
-    let mut model =
-        ParakeetModel::load(&model_path, &Quantization::Int8).expect("Failed to load model");
+    let mut model = ParakeetModel::load(common::ort_env(), &model_path, &Quantization::Int8)
+        .expect("Failed to load model");
 
     // --- One-shot baseline ---
     let oneshot = model

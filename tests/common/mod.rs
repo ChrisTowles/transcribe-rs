@@ -12,3 +12,16 @@ pub fn require_paths(paths: &[&Path]) -> bool {
     }
     true
 }
+
+/// The process's one ONNX Runtime environment, shared by every test in the binary (ort allows a
+/// single environment per process and tests run on parallel threads).
+#[cfg(any(feature = "onnx", feature = "vad-silero"))]
+#[allow(dead_code)]
+pub fn ort_env() -> &'static ort::environment::Environment {
+    static ENV: std::sync::OnceLock<ort::environment::Environment> = std::sync::OnceLock::new();
+    ENV.get_or_init(|| {
+        ort::init()
+            .build()
+            .expect("create the ONNX Runtime environment")
+    })
+}

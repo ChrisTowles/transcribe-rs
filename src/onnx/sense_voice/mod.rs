@@ -57,7 +57,11 @@ pub struct SenseVoiceModel {
 }
 
 impl SenseVoiceModel {
-    pub fn load(model_dir: &Path, quantization: &Quantization) -> Result<Self, TranscribeError> {
+    pub fn load(
+        env: &ort::environment::Environment,
+        model_dir: &Path,
+        quantization: &Quantization,
+    ) -> Result<Self, TranscribeError> {
         let model_path = session::resolve_model_path(model_dir, "model", quantization);
         let tokens_path = model_dir.join("tokens.txt");
 
@@ -69,7 +73,7 @@ impl SenseVoiceModel {
         }
 
         log::info!("Loading SenseVoice model from {:?}...", model_path);
-        let session = session::create_session(&model_path)?;
+        let session = session::create_session(env, &model_path)?;
 
         let input_names: Vec<String> = session
             .inputs()

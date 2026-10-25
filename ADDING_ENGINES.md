@@ -111,7 +111,7 @@ pub trait SpeechModel {
 Required conventions:
 
 - **CAPABILITIES constant**: Define a `const CAPABILITIES: ModelCapabilities` with all fields populated
-- **Constructor**: `Model::load(...)` — single step, returns a ready-to-use model
+- **Constructor**: `Model::load(...)` — single step, returns a ready-to-use model (ONNX engines take the caller's `&ort::environment::Environment` first: ort allows one per process)
 - **Params struct**: `{Model}Params` with `#[derive(Debug, Clone, Default)]`
 - **Two transcribe methods**: `transcribe_with(&mut self, samples, &Params)` for engine-specific params, plus the trait `transcribe()` for the generic interface
 - **Errors**: Use `TranscribeError` variants (`ModelNotFound`, `Inference`, `Audio`, `Config`)
